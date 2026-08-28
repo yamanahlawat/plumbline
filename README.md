@@ -55,8 +55,9 @@ the format works.
 npx skills add yamanahlawat/plumbline
 ```
 
-It writes `~/.agents/skills/` and stops, so it reaches only the agents that scan that
-directory. It does not install `AGENTS.md`, so the always-on rules do not reach you this way.
+It fills `~/.agents/skills/` and links `~/.claude/skills/`. It does not fill
+`~/.gemini/config/skills/`, so Antigravity does not see the skills this way. It never installs
+`AGENTS.md`, so the always-on rules do not reach you this way.
 
 On Claude Code, pick one path. The installer and the plugin each deliver `AGENTS.md`, so
 using both loads the rules twice. The installer warns you when it sees the plugin.
