@@ -6,6 +6,20 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HUB="$HOME/.agents"
 BACKUP="$HOME/.plumbline-backup"
 
+# One row per agent: name | probe | rules file | skills root.
+#
+# The probe decides whether the agent is installed. An empty field means the agent
+# needs nothing there. To support another agent, add a row.
+#
+# Claude Code has no rules file here. Its rules arrive as an import line inside
+# ~/.claude/CLAUDE.md, which the user owns, so a symlink would overwrite their file.
+# opencode has no skills root. It scans ~/.agents/skills itself.
+AGENTS=(
+  "Claude Code|$HOME/.claude||$HOME/.claude/skills"
+  "opencode|$HOME/.config/opencode|$HOME/.config/opencode/AGENTS.md|"
+  "Antigravity|$HOME/.gemini/config|$HOME/.gemini/config/rules/AGENTS.md|$HOME/.gemini/config/skills"
+)
+
 DRY=0
 COMPANIONS=1
 for arg in "$@"; do
@@ -33,6 +47,7 @@ note()    { DID+=("$1"); }
 skip()    { SKIPPED+=("$1"); }
 warn()    { WARNED+=("$1"); }
 run()     { if [ "$DRY" -eq 1 ]; then echo "  would: $*"; else "$@"; fi; }
+tilde()   { printf '%s' "${1/#$HOME/~}"; }
 
 # A link we already own is left alone. Anything else is moved aside first.
 link() {
@@ -58,12 +73,19 @@ link() {
   run ln -sfn "$src" "$dst"
 }
 
-# Every bundled skill, into one destination root.
-link_skills() {
-  local dest="$1" label="$2" skill name
-  for skill in "$ROOT"/skills/*/; do
-    name="$(basename "$skill")"
-    link "${skill%/}" "$dest/$name" "$label/$name"
+# One skill, into the hub and into every installed agent that keeps its own skills root.
+install_skill() {
+  local src="$1" name row probe skills
+  name="$(basename "$src")"
+  # A companion installer already put its skill in the hub. Do not link it to itself.
+  if [ "$src" != "$HUB/skills/$name" ]; then
+    link "$src" "$HUB/skills/$name" "~/.agents/skills/$name"
+  fi
+  for row in "${AGENTS[@]}"; do
+    IFS='|' read -r _ probe _ skills <<<"$row"
+    if [ -d "$probe" ] && [ -n "$skills" ]; then
+      link "$src" "$skills/$name" "$(tilde "$skills/$name")"
+    fi
   done
 }
 
@@ -71,21 +93,30 @@ echo "plumbline: $ROOT"
 [ "$DRY" -eq 1 ] && echo "dry run. nothing is written."
 
 # The hub. opencode scans ~/.agents/skills itself, and the line appended to CLAUDE.md
-# points at ~/.agents/AGENTS.md, so this path has to stay fixed. Claude Code and
-# Antigravity get their own links straight to the repository.
+# points at ~/.agents/AGENTS.md, so this path has to stay fixed.
 link "$ROOT/AGENTS.md" "$HUB/AGENTS.md" "~/.agents/AGENTS.md"
-link_skills "$HUB/skills" "~/.agents/skills"
 
-# Claude Code reads its own skills directory and imports AGENTS.md from CLAUDE.md.
-if [ ! -d "$HOME/.claude" ]; then
-  skip "Claude Code (not installed)"
-else
+for row in "${AGENTS[@]}"; do
+  IFS='|' read -r name probe rules _ <<<"$row"
+  if [ ! -d "$probe" ]; then
+    skip "$name (not installed)"
+  elif [ -n "$rules" ]; then
+    link "$HUB/AGENTS.md" "$rules" "$(tilde "$rules")"
+  fi
+done
+
+for skill in "$ROOT"/skills/*/; do
+  install_skill "${skill%/}"
+done
+
+# Claude Code reads one global rules file, ~/.claude/CLAUDE.md, and the user owns it.
+# An import line is the only way in that does not take the file over.
+if [ -d "$HOME/.claude" ]; then
   # The plugin ships the same rules through its SessionStart hook. Say so and install
   # anyway: a wrong guess here would leave Claude Code with no rules at all.
   if grep -qE '"plumbline@[^"]*"[[:space:]]*:[[:space:]]*true' "$HOME/.claude/settings.json" 2>/dev/null; then
     warn "The plumbline plugin is enabled in Claude Code, so it loads AGENTS.md too. Keep one path: uninstall the plugin, or drop the import from ~/.claude/CLAUDE.md."
   fi
-  link_skills "$HOME/.claude/skills" "~/.claude/skills"
   claude_md="$HOME/.claude/CLAUDE.md"
   import='@~/.agents/AGENTS.md'
   if [ -f "$claude_md" ] && grep -qF "$import" "$claude_md"; then
@@ -100,23 +131,6 @@ else
     printf '%s\n' "$import" >> "$claude_md"
     note "~/.claude/CLAUDE.md (import appended)"
   fi
-fi
-
-# opencode scans ~/.agents/skills itself, so only AGENTS.md needs a pointer. It reads
-# the first rules file that exists and stops, and it does not expand an @import.
-if [ -d "$HOME/.config/opencode" ]; then
-  link "$HUB/AGENTS.md" "$HOME/.config/opencode/AGENTS.md" "~/.config/opencode/AGENTS.md"
-else
-  skip "opencode (not installed)"
-fi
-
-# Antigravity reads ~/.gemini/config. Its .agents folder is a workspace root, not the hub,
-# so both the rules and the skills need a pointer.
-if [ -d "$HOME/.gemini/config" ]; then
-  link "$HUB/AGENTS.md" "$HOME/.gemini/config/rules/AGENTS.md" "~/.gemini/config/rules/AGENTS.md"
-  link_skills "$HOME/.gemini/config/skills" "~/.gemini/config/skills"
-else
-  skip "Antigravity (not installed)"
 fi
 
 # Both installers pick user or project scope from the working directory, so they run
@@ -148,14 +162,9 @@ if [ "$COMPANIONS" -eq 1 ]; then
     else
       skip "impeccable (install it yourself: npx skills add pbakaus/impeccable)"
     fi
-    # It lands in the hub, which only opencode scans. The other two read their own root.
+    # The installer writes ~/.agents/skills and stops. Every other root is ours to fill.
     if [ -d "$HUB/skills/impeccable" ]; then
-      if [ -d "$HOME/.claude" ]; then
-        link "$HUB/skills/impeccable" "$HOME/.claude/skills/impeccable" "~/.claude/skills/impeccable"
-      fi
-      if [ -d "$HOME/.gemini/config" ]; then
-        link "$HUB/skills/impeccable" "$HOME/.gemini/config/skills/impeccable" "~/.gemini/config/skills/impeccable"
-      fi
+      install_skill "$HUB/skills/impeccable"
     fi
   else
     skip "impeccable (npx is not on PATH)"

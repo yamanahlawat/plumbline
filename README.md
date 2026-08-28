@@ -22,10 +22,20 @@ git clone https://github.com/yamanahlawat/plumbline.git ~/plumbline
 ~/plumbline/install.sh
 ```
 
-Works with Claude Code, opencode and Antigravity. It links everything into `~/.agents`,
-points each agent it finds at that hub, and installs the companions below. Re-run it any
-time to repair what has drifted. Add `--dry-run` to see what it would do, or
-`--no-companions` to skip the extras.
+It links everything into `~/.agents`, points each agent it finds at that hub, and installs
+the companions below. Re-run it any time to repair what has drifted. Add `--dry-run` to see
+what it would do, or `--no-companions` to skip the extras.
+
+| Agent | Reads the rules from | Reads the skills from |
+|---|---|---|
+| Claude Code | an import line in `~/.claude/CLAUDE.md` | `~/.claude/skills/` |
+| opencode | `~/.config/opencode/AGENTS.md` | `~/.agents/skills/`, which it scans itself |
+| Antigravity | `~/.gemini/config/rules/AGENTS.md` | `~/.gemini/config/skills/` |
+
+Every agent reads its own paths, so the installer fills each one. To add an agent, add a row
+to the `AGENTS` table at the top of `install.sh`: its name, the directory that proves it is
+installed, the file it reads rules from, and the directory it reads skills from. Leave a
+field empty when the agent needs nothing there.
 
 <details>
 <summary>Other ways to install</summary>
@@ -38,13 +48,15 @@ A `SessionStart` hook delivers `AGENTS.md`, because a plugin cannot ship a conte
 /plugin install plumbline@plumbline
 ```
 
-**Skills only, any agent.** These are [Agent Skills](https://agentskills.io), so any agent
-that reads the format works. This installs the two skills but not `AGENTS.md`, so the
-always-on rules do not reach you this way.
+**Skills only.** These are [Agent Skills](https://agentskills.io), so any agent that reads
+the format works.
 
 ```sh
 npx skills add yamanahlawat/plumbline
 ```
+
+It writes `~/.agents/skills/` and stops, so it reaches only the agents that scan that
+directory. It does not install `AGENTS.md`, so the always-on rules do not reach you this way.
 
 On Claude Code, pick one path. The installer and the plugin each deliver `AGENTS.md`, so
 using both loads the rules twice. The installer warns you when it sees the plugin.
