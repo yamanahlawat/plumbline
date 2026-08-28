@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "plumbline",
+  "description": "Evidence before assertion. House rules for how an agent works.",
+  "owner": {
+    "name": "Yaman Ahlawat",
+    "url": "https://github.com/yamanahlawat"
+  },
+  "plugins": [
+    {
+      "name": "plumbline",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}
