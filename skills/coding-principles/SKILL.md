@@ -66,10 +66,10 @@ Nothing else should restate a principle. Point here instead.
 ## 5. Interfaces & Contracts
 
 - **Postel's Law** - be conservative in what you send, liberal in what you accept
-- Make invalid states unrepresentable - use types/schemas to prevent bad data rather than checking at runtime
+- Make invalid states unrepresentable - use types/schemas to prevent bad data rather than checking at runtime. **Parse, don't validate**: a check hands back the value it proved, never a bool or the string you asked with
 - **Fail fast and loudly** - surface errors at the boundary, not buried in a stack trace
 - **Open/Closed** - open for extension, closed for modification; add behavior without touching existing code
-- **Dependency Inversion** - depend on abstractions, not concretions
+- **Dependency Inversion** - depend on abstractions, not concretions. The environment is a dependency: `PATH`, cwd, `HOME`, env vars, the clock, the locale. Inject them. Ask of every function: does it read anything the caller did not pass?
 - Fewer dependencies = fewer attack surfaces, fewer breakages, faster builds
 
 ---
@@ -88,6 +88,7 @@ Nothing else should restate a principle. Point here instead.
 - **Verify against real data** - a synthetic fixture holds only what its author remembered. A green suite is not evidence until it has met real output
 - **One rule, one home** - delete duplicate coverage. When a test's subject moves, confirm the requirement survives elsewhere before you delete the test
 - **State intent at two layers** - a unit test on the rule, an acceptance test on the behavior. A deviation must falsify both. This is not duplicate coverage - one home per rule _per layer_
+- **Round-trip a pair** - two halves that must agree (encode/decode, write/read, plan/apply) get one test on the agreement, not two tests on the halves. A green half proves nothing about the seam
 - **Test code is production code** - same standards for naming, duplication, and clarity
 - **FIRST** - Fast, Independent, Repeatable, Self-Validating, Timely
 
