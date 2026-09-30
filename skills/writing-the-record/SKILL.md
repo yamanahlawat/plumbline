@@ -33,7 +33,7 @@ to the recipe.
 |---|---|
 | **Bug issue** | Title. One line: version and trigger. Two to four observed bullets. `## Cause`: mechanism bullets. `## Evidence`: tool, frames or commands, measurements. |
 | **Feature or help-wanted issue** | Title as the missing behaviour. One line: what exists today. `## What to build`: exact files and shapes. `## How to prove it`: the command to run, the artefact to paste. |
-| **Pull request** | Title as the changelog line. One line: the problem in the user's terms. `## what it does`. `## decisions worth a look`, each with its reason. `## testing`: counts, commands, real-machine steps. `## what remains`. |
+| **Pull request** | Title that passes commitlint: the repo's config, else `@commitlint/config-conventional` (`type(scope): subject`, lowercase, no period, at most 100 characters). `## what changed`: one to three bullets. `## tested`: what you ran or tried, and what you saw. Only when they apply: `Closes #N`; `breaking: <what users must do>`, with `!` in the title; a screenshot for a UI change. Nothing else. |
 | **Changelog entry** | One bold sentence: what changed for whom. Two to five lines: what the user does differently, what still needs a restart or a workaround. |
 | **Release notes** | The version's changelog section, unchanged, under a title in the project's series. |
 | **Roadmap** | Landed. Next, numbered, each with why it is next. Community sized. Not planned, each with why. |
@@ -63,6 +63,28 @@ Observed on 2.3.0 when Wi-Fi drops for ten seconds during a fade.
 
 Debugger, twice: animation thread in `netlite::send`, holding `scene`; RPC thread in
 `Mutex::lock` on `scene`.
+```
+
+## A pull request reads like a teammate wrote it
+
+- Write it as you would tell a colleague at their desk. Plain words, short lines.
+- Name the change, not the effort. "status answers during a fade", not "This PR enhances status handling".
+- No "This PR", no bold, no emoji, no summary line at the end.
+- No brochure words: robust, seamless, comprehensive, enhance, leverage, streamline, ensure.
+- A test line says what happened: the command and its result, or the action and what you saw.
+
+```markdown
+fix: lampd status answers during a network drop
+
+## what changed
+
+- the fade releases the `scene` lock before it sends to the lamp
+- `status` no longer waits behind a send that never returns
+
+## tested
+
+- dropped Wi-Fi for 10 s mid-fade: `lampd status` answered every time
+- `cargo test`: 48 passed
 ```
 
 ## Before you send

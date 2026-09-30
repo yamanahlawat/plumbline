@@ -39,6 +39,7 @@ process skills. Brainstorming comes before a plan. Systematic debugging comes be
 ## Evidence
 
 - Verify against real data before you believe a green suite.
+- A suite that ran in your shell is not evidence for a process a supervisor starts. Run it where it will run.
 - Read every field, not the one you expect to hold the answer.
 - Measure before you name a cause. Disprove your own hypothesis first.
 - Follow the mechanism, not the symptom.
