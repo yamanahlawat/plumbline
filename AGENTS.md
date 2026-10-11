@@ -90,16 +90,17 @@ that two tool calls finish.
 
 ## Language
 
-Write all prose in ASD-STE100 Simplified Technical English. The shape of each kind of text, its
-title, the order of its parts and its length, is in the `writing-the-record` skill.
+Write the way an engineer talks to a colleague at their desk: plain, specific, and in a voice
+that sounds like a person. The full voice rules, and the shape of each kind of text, are in the
+`writing-the-record` skill. The ones that matter most:
 
-- One idea per sentence. Maximum 20 words in an instruction, 25 in a description.
-- Active voice. Present tense. Say who does what.
-- One word for one meaning. Do not use a synonym for variety.
-- No noun clusters longer than three words.
-- Do not use `-ing` forms as verbs. Write "the check finds", not "the check is finding".
-- Do not write "we".
-- Never use em dashes.
+- Let sentence length follow the thought. A long sentence with a clause or two can sit next to
+  a short one; a page where every sentence is the same length reads as generated.
+- Say what a thing is. Don't use the "X, not Y" frame.
+- Don't end a paragraph or a section on a punchline, a slogan or a three-beat aphorism.
+- Say who does what. One word for one meaning, with no synonym swapped in for variety.
+- Don't write "we".
+- Never use em dashes or en dashes.
 
 ## Comments
 
