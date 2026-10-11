@@ -9,7 +9,7 @@
 A plumb line is the reference you check against.
 
 - **`AGENTS.md`** - rules that apply to every action: evidence, restraint, process,
-  language, comments, commits. Always in context.
+  language, comments, commits and releases. Always in context.
 - **`coding-principles`** - a skill: YAGNI, naming, structure, contracts, testing.
 - **`writing-the-record`** - a skill: one recipe per kind of text a person reads.
 
@@ -66,15 +66,18 @@ using both loads the rules twice. The installer warns you when it sees the plugi
 
 ## Companions
 
-plumbline is one opinionated working style, not a neutral baseline. `AGENTS.md` names two
-skills it does not bundle. `install.sh` installs both; neither is required.
+plumbline is one opinionated working style, not a neutral baseline. `AGENTS.md` names three
+skills it does not bundle. `install.sh` installs all three; none is required.
 
 - **[superpowers](https://github.com/obra/superpowers)** - the process: brainstorming
   before a plan, systematic debugging before a fix, TDD, code review.
+- **[frontend-design](https://github.com/anthropics/claude-plugins-public/tree/main/plugins/frontend-design)** -
+  Claude's own frontend skill, as a Claude Code plugin. Claude Code uses it for UI and UX work.
 - **[impeccable](https://github.com/pbakaus/impeccable)** - frontend craft: hierarchy,
-  typography, accessibility, motion.
+  typography, accessibility, motion. Every agent except Claude Code uses it, so the installer
+  links it everywhere else and removes a link it made in `~/.claude/skills/` earlier.
 
-If you skip one, delete its row from `AGENTS.md`.
+If you skip one, take it out of `AGENTS.md`.
 
 ## License
 

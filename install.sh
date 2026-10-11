@@ -31,7 +31,7 @@ for arg in "$@"; do
 usage: install.sh [--dry-run] [--no-companions]
 
   --dry-run         Print what would change. Write nothing.
-  --no-companions   Skip superpowers and impeccable.
+  --no-companions   Skip superpowers, frontend-design and impeccable.
 
 Links AGENTS.md and the skills into ~/.agents, then points each installed
 agent at that hub. Anything already in place moves to ~/.plumbline-backup
@@ -73,20 +73,48 @@ link() {
   run ln -sfn "$src" "$dst"
 }
 
-# One skill, into the hub and into every installed agent that keeps its own skills root.
+# Only a link we own is removed. Anything else at that path belongs to the user.
+unlink_ours() {
+  local src="$1" dst="$2" label="$3"
+  if [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ]; then
+    run rm "$dst"
+    note "$label (link removed)"
+  fi
+}
+
+# One skill, into the hub and into every installed agent that keeps its own skills root,
+# except the agent named in the second argument, which loses any link we made earlier.
 install_skill() {
-  local src="$1" name row probe skills
+  local src="$1" except="${2:-}" name row agent probe skills
   name="$(basename "$src")"
   # A companion installer already put its skill in the hub. Do not link it to itself.
   if [ "$src" != "$HUB/skills/$name" ]; then
     link "$src" "$HUB/skills/$name" "~/.agents/skills/$name"
   fi
   for row in "${AGENTS[@]}"; do
-    IFS='|' read -r _ probe _ skills <<<"$row"
-    if [ -d "$probe" ] && [ -n "$skills" ]; then
+    IFS='|' read -r agent probe _ skills <<<"$row"
+    if [ ! -d "$probe" ] || [ -z "$skills" ]; then
+      continue
+    elif [ "$agent" = "$except" ]; then
+      unlink_ours "$src" "$skills/$name" "$(tilde "$skills/$name")"
+    else
       link "$src" "$skills/$name" "$(tilde "$skills/$name")"
     fi
   done
+}
+
+claude_plugin() {
+  local name="$1" plugin="$1@claude-plugins-official"
+  if ! command -v claude >/dev/null 2>&1; then
+    skip "$name (the claude CLI is not on PATH)"
+  elif [ "$DRY" -eq 1 ]; then
+    echo "  would: claude plugin install $plugin"
+    note "$name"
+  elif (cd "$HOME" && claude plugin install "$plugin") </dev/null >/dev/null 2>&1; then
+    note "$name"
+  else
+    skip "$name (install it yourself: claude plugin install $plugin)"
+  fi
 }
 
 echo "plumbline: $ROOT"
@@ -136,22 +164,13 @@ fi
 # Both installers pick user or project scope from the working directory, so they run
 # from $HOME. Run from here, they install into this repository.
 #
-# impeccable is a skill, so it installs into the hub and links out like the rest.
+# impeccable is a skill, so it installs into the hub and links out like the rest, except
+# into Claude Code. AGENTS.md has Claude Code use the frontend-design plugin instead.
 # superpowers is a plugin with hooks and commands, so each agent holds its own copy:
 # the Claude Code plugin cache, and a `plugin` entry in opencode.jsonc.
 if [ "$COMPANIONS" -eq 1 ]; then
-  if command -v claude >/dev/null 2>&1; then
-    if [ "$DRY" -eq 1 ]; then
-      echo "  would: claude plugin install superpowers@claude-plugins-official"
-      note "superpowers"
-    elif (cd "$HOME" && claude plugin install superpowers@claude-plugins-official) </dev/null >/dev/null 2>&1; then
-      note "superpowers"
-    else
-      skip "superpowers (install it yourself: claude plugin install superpowers@claude-plugins-official)"
-    fi
-  else
-    skip "superpowers (the claude CLI is not on PATH)"
-  fi
+  claude_plugin superpowers
+  claude_plugin frontend-design
 
   if command -v npx >/dev/null 2>&1; then
     if [ "$DRY" -eq 1 ]; then
@@ -164,13 +183,13 @@ if [ "$COMPANIONS" -eq 1 ]; then
     fi
     # The installer writes ~/.agents/skills and stops. Every other root is ours to fill.
     if [ -d "$HUB/skills/impeccable" ]; then
-      install_skill "$HUB/skills/impeccable"
+      install_skill "$HUB/skills/impeccable" "Claude Code"
     fi
   else
     skip "impeccable (npx is not on PATH)"
   fi
 else
-  skip "superpowers and impeccable (--no-companions)"
+  skip "superpowers, frontend-design and impeccable (--no-companions)"
 fi
 
 echo

@@ -27,6 +27,27 @@ to the recipe.
   closing summary, no thanks. No process steps: what happens after a merge or a release
   belongs to the workflow, not to the text that records the change.
 
+## Voice
+
+Write the way an engineer talks to a colleague at their desk. Two rounds of blind readers
+flagged text written to short, uniform, declarative rules as AI-generated; the rules below
+changed that verdict on the same facts.
+
+- **Let sentence length follow the thought.** A long sentence with a clause or a "which" can
+  sit next to a short one. A page where every sentence is the same length reads as generated.
+- **Say what a thing is.** Don't use the "X, not Y" frame; blind readers quoted it as a tell.
+- **No punchline endings.** Don't close a paragraph or a section on a slogan, an epigram or a
+  three-beat aphorism ("They move the odds. They do not set the behaviour."). End on the
+  fact, the number or what is still open.
+- **Say loose ends plainly.** "I don't know why yet" beats a tidy theory.
+- **Plain words a person would use.** Contractions where they come naturally, and the small
+  connectors of real speech ("the thing is", "which is fine") where they fit. Don't sprinkle
+  them to sound casual.
+- **Say who does what.** One word for one meaning, with no synonym swapped in for variety.
+- **No "we", no em dashes, no en dashes.**
+- **Never invent a feeling, a motive or an opinion for the person the text speaks for.** Mark
+  it for them to confirm.
+
 ## Recipes
 
 | Text | Parts, in order |
