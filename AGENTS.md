@@ -14,7 +14,7 @@ Load a skill by name, or with a slash command where the agent supports one.
 |---|---|---|
 | `coding-principles` | Before you write, refactor or review code. | bundled |
 | `writing-the-record` | Before any prose a person reads: an issue, a PR, a changelog entry, a roadmap, a doc, a status or findings reply. | bundled |
-| `impeccable` | For all frontend work: UI, UX, layout, styling, design review. | companion |
+| `frontend-design` or `impeccable` | For all frontend work: UI, UX, layout, styling, design review. In Claude Code, use Claude's `frontend-design` skill only. Every other agent uses `impeccable`. | companion |
 | `superpowers` | For non-trivial work. See the test below. | companion |
 
 Load the skill before the first tool call, not after you start.
