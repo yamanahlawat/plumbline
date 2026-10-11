@@ -9,7 +9,7 @@
 A plumb line is the reference you check against.
 
 - **`AGENTS.md`** - rules that apply to every action: evidence, restraint, process,
-  language, comments, commits. Always in context.
+  language, comments, commits and releases. Always in context.
 - **`coding-principles`** - a skill: YAGNI, naming, structure, contracts, testing.
 - **`writing-the-record`** - a skill: one recipe per kind of text a person reads.
 

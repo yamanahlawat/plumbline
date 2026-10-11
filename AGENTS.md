@@ -59,7 +59,7 @@ process skills. Brainstorming comes before a plan. Systematic debugging comes be
 ## Process
 
 - Branch from the last good commit. Do not fix forward through a regression.
-- Finish one phase, then stop. Propose a commit message and wait.
+- Finish one phase, commit it, then stop.
 - Leave the working tree untouched while a review is open. A moving diff cannot be read.
 - Keep a working document in the branch: the plan, the log, and every correction.
 - Use absolute paths in scripts. A shell can change directory under you.
@@ -108,7 +108,10 @@ that sounds like a person. The full voice rules, and the shape of each kind of t
   show, most often an absence: why a guard or dependency is deliberately not there.
 - Do not put specification references or decision prose in a comment.
 
-## Commits
+## Commits and releases
 
-- Never commit unasked.
 - One phase per commit. Title only. No description body.
+- Subagents can make small commits while a phase or a feature is in progress. When it is done,
+  squash them into one commit for the phase or the feature.
+- Never publish a release to GitHub unasked. That covers `gh release create` and pushing a
+  version tag that a release workflow picks up.
