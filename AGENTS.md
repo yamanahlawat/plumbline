@@ -13,7 +13,7 @@ Load a skill by name, or with a slash command where the agent supports one.
 | Skill | Load it | |
 |---|---|---|
 | `coding-principles` | Before you write, refactor or review code. | bundled |
-| `writing-the-record` | Before any prose a person reads: an issue, a PR, a changelog entry, a roadmap, a doc, a status or findings reply. | bundled |
+| `writing-the-record` | Before any prose a person reads: an issue, a PR, a changelog entry, a roadmap, a doc, a status or findings reply, or screen copy. | bundled |
 | `frontend-design` or `impeccable` | For all frontend work: UI, UX, layout, styling, design review. In Claude Code, use Claude's `frontend-design` skill only. Every other agent uses `impeccable`. | companion |
 | `superpowers` | For non-trivial work. See the test below. | companion |
 
@@ -90,12 +90,14 @@ that two tool calls finish.
 
 ## Language
 
-Write the way an engineer talks to a colleague at their desk: plain, specific, and in a voice
-that sounds like a person. The full voice rules, and the shape of each kind of text, are in the
-`writing-the-record` skill. The ones that matter most:
+Write the way an engineer talks to a colleague at their desk: plain, specific, and in words the
+reader gets on the first pass. The full voice rules, and the shape of each kind of text, are in
+the `writing-the-record` skill. The ones that matter most:
 
-- Let sentence length follow the thought. A long sentence with a clause or two can sit next to
-  a short one; a page where every sentence is the same length reads as generated.
+- Keep sentences short: at most 20 words in an instruction and 25 anywhere else. Vary the
+  length under that cap; a page where every sentence is the same length reads as generated.
+- One idea per sentence. One instruction per sentence, in the imperative.
+- Active voice. Common words; a technical name is fine once it is defined.
 - Say what a thing is. Don't use the "X, not Y" frame.
 - Don't end a paragraph or a section on a punchline, a slogan or a three-beat aphorism.
 - Say who does what. One word for one meaning, with no synonym swapped in for variety.

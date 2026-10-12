@@ -1,6 +1,6 @@
 ---
 name: writing-the-record
-description: Use when writing any prose a person will read - an issue, a pull request, a changelog entry, release notes, a roadmap, a README section, a commit title, a design note, or a reply that reports status or findings. Load before the first sentence, not after a draft exists.
+description: Use when writing any prose a person will read - an issue, a pull request, a changelog entry, release notes, a roadmap, a README section, a commit title, a design note, a reply that reports status or findings, or screen copy (a question, an instruction, a verdict, an error or a button label). Load before the first sentence, not after a draft exists.
 ---
 
 # Writing the record
@@ -29,21 +29,34 @@ to the recipe.
 
 ## Voice
 
-Write the way an engineer talks to a colleague at their desk. Two rounds of blind readers
-flagged text written to short, uniform, declarative rules as AI-generated; the rules below
-changed that verdict on the same facts.
+Write the way an engineer talks to a colleague at their desk, in words the reader gets on the
+first pass. Two rounds of blind readers flagged text written to short, uniform, declarative
+rules as AI-generated; the rules below changed that verdict on the same facts. The caps on
+sentence length, one instruction per sentence and the common-word rule come from ASD-STE100
+Simplified Technical English. Text written to both sets together has not been through a blind
+reading yet.
 
-- **Let sentence length follow the thought.** A long sentence with a clause or a "which" can
-  sit next to a short one. A page where every sentence is the same length reads as generated.
+- **Keep each sentence short, and vary the length under the cap.** At most 20 words in an
+  instruction and 25 anywhere else. A five-word sentence can sit next to a twenty-word one; a
+  page where every sentence is the same length reads as generated.
+- **One idea per sentence.** A second idea is a second sentence.
+- **One instruction per sentence, in the imperative.** "Run the loop body once. Type what
+  `seen` holds."
+- **Active voice, present tense.** Say who does what: "the check finds the gap".
+- **Say when something happens in plain words.** Write "when line 4 starts again". A clause
+  like "until it comes back to line 4, with `i = 0`" leaves the reader to work out the timing.
+- **Common words.** Write "use" for "utilize" and "start" for "commence". A technical name is
+  fine: define it on first use, then use the same name every time.
+- **No noun clusters longer than three words.** Break a longer one into a phrase: "the fix for
+  the drift in the judge's time limit".
 - **Say what a thing is.** Don't use the "X, not Y" frame; blind readers quoted it as a tell.
 - **No punchline endings.** Don't close a paragraph or a section on a slogan, an epigram or a
   three-beat aphorism ("They move the odds. They do not set the behaviour."). End on the
   fact, the number or what is still open.
 - **Say loose ends plainly.** "I don't know why yet" beats a tidy theory.
-- **Plain words a person would use.** Contractions where they come naturally, and the small
-  connectors of real speech ("the thing is", "which is fine") where they fit. Don't sprinkle
-  them to sound casual.
-- **Say who does what.** One word for one meaning, with no synonym swapped in for variety.
+- **Contractions where they come naturally.** Don't add filler such as "the thing is" to sound
+  casual.
+- **One word for one meaning,** with no synonym swapped in for variety.
 - **No "we", no em dashes, no en dashes.**
 - **Never invent a feeling, a motive or an opinion for the person the text speaks for.** Mark
   it for them to confirm.
@@ -62,6 +75,22 @@ changed that verdict on the same facts.
 | **Status reply** | State in one line: done, blocked, in progress. What was measured, with the number. What is open. The one question, if any. |
 | **Findings reply** | Per finding: the finding as a sentence, the evidence, the consequence, the recommendation. A table at three or more. |
 | **README or doc section** | What it is, one line. The command. What it needs. Where it falls short. |
+| **Screen copy** | A question: what to do, then what to answer. An instruction: one action per sentence. A verdict: the result in one word, what differs, then the right value. An error: what happened, then what to do next. A button: the verb of its action, and the same verb in the message that confirms it. |
+
+## One example, screen copy
+
+A learner predicts a dict and types a string key. The first version below is what a screen
+showed; the second follows the rules.
+
+```text
+Run the code in your head until it comes back to line 4, with i = 0. What will seen hold then?
+Missed. When line 4 runs again, at step 7, seen holds 3: 0, not '3': 0.
+```
+
+```text
+Run the loop body one time in your head. What is in seen when line 4 starts again?
+Missed. Your key is the string '3'. The code stores the number 3. At step 7, seen is {3: 0}.
+```
 
 ## One example, a bug issue
 
@@ -111,4 +140,5 @@ fix: lampd status answers during a network drop
 ## Before you send
 
 Read it once as the person who must act on it. Cut every line they do not need. Check: the
-title is a sentence, every number is measured, what remains is named.
+title is a sentence, every number is measured, what remains is named, and no sentence is over
+its cap.
