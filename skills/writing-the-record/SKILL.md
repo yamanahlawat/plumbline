@@ -122,6 +122,7 @@ Debugger, twice: animation thread in `netlite::send`, holding `scene`; RPC threa
 - No "This PR", no bold, no emoji, no summary line at the end.
 - No brochure words: robust, seamless, comprehensive, enhance, leverage, streamline, ensure.
 - A test line says what happened: the command and its result, or the action and what you saw.
+- Keep test lines to this change. Leave out your machine, runs you skipped and failures the change didn't cause.
 
 ```markdown
 fix: lampd status answers during a network drop
