@@ -36,6 +36,18 @@ Everything else is non-trivial: a feature, a bug fix, a refactor, a port, or any
 cannot state in one sentence. Where superpowers is installed, non-trivial work starts with its
 process skills. Brainstorming comes before a plan. Systematic debugging comes before a fix.
 
+## Before a plan
+
+Weigh non-trivial work from three views first. Run them as parallel subagents on the top model.
+
+- **Architect:** what changes in code, tests, configs and screens, and the open design questions.
+- **Product designer:** what a person gains or loses, the copy, and what is not needed yet.
+- **Convention and security:** the platform's documented way, what comparable projects do,
+  and anything that widens what a local process can do.
+
+Bring the person four answers: the impact, the value, whether it is needed now, and
+convention and security. Give each open question with your pick. Record the answers verbatim.
+
 ## Evidence
 
 - Verify against real data before you believe a green suite.
@@ -74,6 +86,8 @@ process skills. Brainstorming comes before a plan. Systematic debugging comes be
 2. Review the change. In Claude Code, run `/code-review` or `/simplify`. With superpowers, use
    `requesting-code-review` and `verification-before-completion` only if Claude Code is not available.
 3. Show the command output before you call the work done. Evidence comes before the claim.
+4. After a change a person sees, run it and ask them to try each control. A diff cannot show
+   an absence or a whole screen.
 
 ## Subagents
 
@@ -87,6 +101,9 @@ Delegate independent work to subagents. Match the model to the complexity:
 
 A subagent starts cold, so give it the full context and a clear deliverable. Do not delegate work
 that two tool calls finish.
+
+A subagent never touches the person's live install or running services. Only the main session
+does, with the person's permission.
 
 ## Language
 
@@ -113,6 +130,8 @@ the `writing-the-record` skill. The ones that matter most:
 ## Commits and releases
 
 - One phase per commit. Title only. No description body.
+- Outside an agreed plan, commit, push and a pull request are three separate asks. Show the
+  diff before each one.
 - Subagents can make small commits while a phase or a feature is in progress. When it is done,
   squash them into one commit for the phase or the feature.
 - Never publish a release to GitHub unasked. That covers `gh release create` and pushing a
