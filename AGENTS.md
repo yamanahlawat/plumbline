@@ -36,6 +36,18 @@ Everything else is non-trivial: a feature, a bug fix, a refactor, a port, or any
 cannot state in one sentence. Where superpowers is installed, non-trivial work starts with its
 process skills. Brainstorming comes before a plan. Systematic debugging comes before a fix.
 
+## Before a plan
+
+Weigh non-trivial work from three views first. Run them as parallel subagents on the top model.
+
+- **Architect:** what changes in code, tests, configs and screens, and the open design questions.
+- **Product designer:** what a person gains or loses, the copy, and what is not needed yet.
+- **Convention and security:** the platform's documented way, what comparable projects do,
+  and anything that widens what a local process can do.
+
+Bring the person four answers: the impact, the value, whether it is needed now, and
+convention and security. Give each open question with your pick. Record the answers verbatim.
+
 ## Evidence
 
 - Verify against real data before you believe a green suite.
