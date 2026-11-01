@@ -67,7 +67,7 @@ reading yet.
 |---|---|
 | **Bug issue** | Title. One line: version and trigger. Two to four observed bullets. `## Cause`: mechanism bullets. `## Evidence`: tool, frames or commands, measurements. |
 | **Feature or help-wanted issue** | Title as the missing behaviour. One line: what exists today. `## What to build`: exact files and shapes. `## How to prove it`: the command to run, the artefact to paste. |
-| **Pull request** | Title that passes commitlint: the repo's config, else `@commitlint/config-conventional` (`type(scope): subject`, lowercase, no period, at most 100 characters). `## what changed`: one to three bullets. `## tested`: what you ran or tried, and what you saw. Only when they apply: `Closes #N`; `breaking: <what users must do>`, with `!` in the title; a screenshot for a UI change. Nothing else. |
+| **Pull request** | Title that passes commitlint: the repo's config, else `@commitlint/config-conventional` (`type(scope): subject`, lowercase, no period, at most 100 characters). `## what changed`: one to three bullets. `## tested`: what you ran or tried on this diff, and what you saw; leave the section out when nothing ran, as for a docs change. Only when they apply: `Closes #N`; `breaking: <what users must do>`, with `!` in the title; a screenshot for a UI change. Nothing else. |
 | **Changelog entry** | One bold sentence: what changed for whom. Two to five lines: what the user does differently, what still needs a restart or a workaround. |
 | **Release notes** | The version's changelog section, unchanged, under a title in the project's series. |
 | **Roadmap** | Landed. Next, numbered, each with why it is next. Community sized. Not planned, each with why. |
@@ -123,6 +123,8 @@ Debugger, twice: animation thread in `netlite::send`, holding `scene`; RPC threa
 - No brochure words: robust, seamless, comprehensive, enhance, leverage, streamline, ensure.
 - A test line says what happened: the command and its result, or the action and what you saw.
 - Keep test lines to this change. Leave out your machine, runs you skipped and failures the change didn't cause.
+- A test line exercises this diff. Where an idea was used before is not a test of it.
+- Name another pull request where it matters: the one this depends on, or the one that caused the bug.
 
 ```markdown
 fix: lampd status answers during a network drop
