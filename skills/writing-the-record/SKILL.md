@@ -1,6 +1,6 @@
 ---
 name: writing-the-record
-description: Use when writing any prose a person will read - an issue, a pull request, a changelog entry, release notes, a roadmap, a README section, a commit title, a design note, a reply that reports status or findings, or screen copy (a question, an instruction, a verdict, an error or a button label). Load before the first sentence, not after a draft exists.
+description: "Use when writing a text that stays in the record: an issue, a pull request, a commit title, a changelog entry, release notes, a roadmap, a README or doc section, a design note, or screen copy (a question, an instruction, a verdict, an error or a button label). Load before the first sentence of the text."
 ---
 
 # Writing the record
@@ -17,47 +17,27 @@ to the recipe.
 - **Observed, then cause, then evidence.** Evidence names its source: a command, a file and
   line, a measurement.
 - **One fact, one place.** A second mention of a number, path or symptom is a cut.
-- **Numbers only when measured; facts only from the brief.** Say "not measured" when it is not.
+- **Facts only from the brief.**
 - **Bullets of one or two lines; paragraphs of at most two.** A longer thought is two bullets.
 - **Headings only where the reader's question changes.** No Summary, Steps, Expected, Actual
   or Environment templates; those facts go in the observed lines. A recipe section that would
   repeat another, or would be empty, is omitted.
-- **What remains is named.** A limit, a deferred half, an unverified claim.
+- **What remains is named.** A limit, a deferred half, an unverified claim. "I don't know why
+  yet" beats a tidy theory.
 - **Nothing the reader did not ask for.** No proposed fix in a bug report, no preamble, no
   closing summary, no thanks. No process steps: what happens after a merge or a release
-  belongs to the workflow, not to the text that records the change.
+  belongs to the workflow.
 
 ## Voice
 
-Write the way an engineer talks to a colleague at their desk, in words the reader gets on the
-first pass. Two rounds of blind readers flagged text written to short, uniform, declarative
-rules as AI-generated; the rules below changed that verdict on the same facts. The caps on
-sentence length, one instruction per sentence and the common-word rule come from ASD-STE100
-Simplified Technical English. Text written to both sets together has not been through a blind
-reading yet.
+The Language rules in `AGENTS.md` hold for every text. A text in the record adds these.
 
-- **Keep each sentence short, and vary the length under the cap.** At most 20 words in an
-  instruction and 25 anywhere else. A five-word sentence can sit next to a twenty-word one; a
-  page where every sentence is the same length reads as generated.
-- **One idea per sentence.** A second idea is a second sentence.
-- **One instruction per sentence, in the imperative.** "Run the loop body once. Type what
-  `seen` holds."
-- **Active voice, present tense.** Say who does what: "the check finds the gap".
 - **Say when something happens in plain words.** Write "when line 4 starts again". A clause
   like "until it comes back to line 4, with `i = 0`" leaves the reader to work out the timing.
-- **Common words.** Write "use" for "utilize" and "start" for "commence". A technical name is
-  fine: define it on first use, then use the same name every time.
 - **No noun clusters longer than three words.** Break a longer one into a phrase: "the fix for
   the drift in the judge's time limit".
-- **Say what a thing is.** Don't use the "X, not Y" frame; blind readers quoted it as a tell.
-- **No punchline endings.** Don't close a paragraph or a section on a slogan, an epigram or a
-  three-beat aphorism ("They move the odds. They do not set the behaviour."). End on the
-  fact, the number or what is still open.
-- **Say loose ends plainly.** "I don't know why yet" beats a tidy theory.
 - **Contractions where they come naturally.** Don't add filler such as "the thing is" to sound
   casual.
-- **One word for one meaning,** with no synonym swapped in for variety.
-- **No "we", no em dashes, no en dashes.**
 - **Never invent a feeling, a motive or an opinion for the person the text speaks for.** Mark
   it for them to confirm.
 
@@ -67,11 +47,11 @@ reading yet.
 |---|---|
 | **Bug issue** | Title. One line: version and trigger. Two to four observed bullets. `## Cause`: mechanism bullets. `## Evidence`: tool, frames or commands, measurements. |
 | **Feature or help-wanted issue** | Title as the missing behaviour. One line: what exists today. `## What to build`: exact files and shapes. `## How to prove it`: the command to run, the artefact to paste. |
-| **Pull request** | Title that passes commitlint: the repo's config, else `@commitlint/config-conventional` (`type(scope): subject`, lowercase, no period, at most 100 characters). `## what changed`: one to three bullets. `## tested`: what you ran or tried on this diff, and what you saw; leave the section out when nothing ran, as for a docs change. Only when they apply: `Closes #N`; `breaking: <what users must do>`, with `!` in the title; a screenshot for a UI change. Nothing else. |
+| **Pull request** | Title that passes commitlint: the repo's config, else `@commitlint/config-conventional` (`type(scope): subject`, lowercase, no period, at most 100 characters). `## what changed`: one to three bullets. `## tested`: the test lines below; leave the section out when nothing ran, as for a docs change. Only when they apply: `Closes #N`; `breaking: <what users must do>`, with `!` in the title; a screenshot for a UI change. Nothing else. |
+| **Commit title** | The pull request title format. No body. |
 | **Changelog entry** | One bold sentence: what changed for whom. Two to five lines: what the user does differently, what still needs a restart or a workaround. |
 | **Release notes** | The version's changelog section, unchanged, under a title in the project's series. |
 | **Roadmap** | Landed. Next, numbered, each with why it is next. Community sized. Not planned, each with why. |
-| **Commit title** | `type: <the fact>`, lowercase, no period, no body. |
 | **Status reply** | State in one line: done, blocked, in progress. What was measured, with the number. What is open. The one question, if any. |
 | **Findings reply** | Per finding: the finding as a sentence, the evidence, the consequence, the recommendation. A table at three or more. |
 | **README or doc section** | What it is, one line. The command. What it needs. Where it falls short. |
@@ -117,14 +97,14 @@ Debugger, twice: animation thread in `netlite::send`, holding `scene`; RPC threa
 
 ## A pull request reads like a teammate wrote it
 
-- Write it as you would tell a colleague at their desk. Plain words, short lines.
-- Name the change, not the effort. "status answers during a fade", not "This PR enhances status handling".
+- Name the change. "status answers during a fade" beats "This PR enhances status handling".
 - No "This PR", no bold, no emoji, no summary line at the end.
 - No brochure words: robust, seamless, comprehensive, enhance, leverage, streamline, ensure.
-- A test line says what happened: the command and its result, or the action and what you saw.
-- Keep test lines to this change. Leave out your machine, runs you skipped and failures the change didn't cause.
-- A test line exercises this diff. Where an idea was used before is not a test of it.
-- Name another pull request where it matters: the one this depends on, or the one that caused the bug.
+- A test line says what happened on this diff: the command and its result, or the action and
+  what you saw. Where an idea was used before is no test of it.
+- Leave out your machine, runs you skipped and failures the change didn't cause.
+- Name another pull request where it matters: the one this depends on, or the one that caused
+  the bug.
 
 ```markdown
 fix: lampd status answers during a network drop
@@ -142,6 +122,4 @@ fix: lampd status answers during a network drop
 
 ## Before you send
 
-Read it once as the person who must act on it. Cut every line they do not need. Check: the
-title is a sentence, every number is measured, what remains is named, and no sentence is over
-its cap.
+Read it once as the person who must act on it. Cut every line they do not need.

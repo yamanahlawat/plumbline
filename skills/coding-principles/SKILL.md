@@ -1,104 +1,150 @@
 ---
 name: coding-principles
-description: The house rules for writing code in any language or repo - need-before-build (YAGNI), naming and comments, structure, complexity limits, contracts, testing discipline, and process. Load before writing, refactoring, or reviewing any code.
+description: "The house rules for writing code in any language or repo, each under its common name: need before build (YAGNI), naming and comments, structure, complexity, contracts, testing and process. Load before writing, refactoring or reviewing any code."
 ---
 
-# Coding Principles
+# Coding principles
 
-The single home for how we write code. Language-agnostic and project-agnostic - nothing here names a framework or a file in a repo.
+The one home for how code is written. Nothing here names a framework or a file in a repo.
+Each rule carries its common name in bold, so a reader can look it up.
 
-- Repo mechanics - paths, test config, fixture placement, patch idioms → the repo's `AGENTS.md`
-- Why a specific decision was made → the repo's `docs/adr/`, `docs/design/`
+- Repo mechanics, such as paths, test config and fixture placement, live in the repo's `AGENTS.md`.
+- The reason for a specific decision lives in the repo's decision records, such as `docs/adr/`.
 
-Nothing else should restate a principle. Point here instead.
+## 1. Need before build
 
----
+**YAGNI** (you aren't gonna need it). Ask these in order and stop at the first yes.
 
-## 1. Do You Even Need It?
+1. Does nothing need it today? Then skip it.
+2. Does the standard library do it? Use that.
+3. Does the platform do it natively? Use that.
+4. Does an installed dependency do it? Use that.
+5. Does one line do it? Write one line.
+6. Otherwise, write the least code that works.
 
-1. Does this need to exist? → no: skip it (YAGNI)
-2. Stdlib does it? → use it
-3. Native platform feature? → use it
-4. Installed dependency? → use it
-5. One line? → one line
-6. Only then: write the minimum that works
+Each dependency is one more thing to break, to patch and to build.
 
-> The best code is code that doesn't exist. The second best is code that's obvious.
+## 2. Naming and comments
 
----
-
-## 2. Naming & Comments
-
-- Names should reveal intent - if you need a comment to explain a name, the name is wrong
-- Don't abbreviate unless the abbreviation is more universally known than the full word
-- Code is read ~10x more than it is written - optimize for the reader
-- **"Why, not what" is the floor, not the bar.** Before writing a comment, ask whether the code can carry the intent itself: rename, extract, restructure. A comment is what is left when none of that can express it
-- **What can earn a comment** - a third-party default invisible from the call site, a library or browser behaviour that contradicts the obvious reading, the measurement behind a magic number, or an **absence**: why a guard, check, or dependency is deliberately *not* there. Absences are the strongest case, because code cannot state what is not written
-- **Never restate what already stands next to it** - the constant below, the test name above, the type on the parameter. A ticket or meeting citation is provenance, not a why: keep the constraint, drop the reference
-- **State the constraint the code lives under now, not the change that produced it** - nothing catches a note about a past state when it stops being true. The path not taken belongs in the commit message or an ADR
-- **A surviving comment is still cut to length** - one line wherever one line does; delete the second sentence that re-explains the first
-- A docstring is part of the contract - when it names one thing and the body does another, it misleads every later reader
-- **A docstring that ships is contract only** - public API, generated schema, published docs. Internal rationale belongs in a comment beside the code, not in text handed to callers
-
----
+- **Intention-revealing names.** If a name needs a comment, rename it.
+- Abbreviate only when the short form is better known than the full word.
+- **Self-documenting code.** Default to no comment. Make the code carry the intent first:
+  rename, extract or restructure. A comment holds only what is left.
+- **What earns a comment.** Four things do. A third-party default the call site cannot show.
+  A library behaviour that contradicts the obvious reading. The measurement behind a magic
+  number. An absence, which says why a guard, a check or a dependency is deliberately missing.
+  Code cannot show what is not written, so an absence is the strongest case.
+- Never restate what stands next to the comment: the constant below, the test name above, the
+  type on the parameter.
+- Keep the constraint and drop its provenance. A ticket, a meeting or a specification section
+  is no reason. Decision prose goes in the commit or a decision record.
+- State the constraint the code lives under now. A note about an earlier state goes stale and
+  nothing catches it.
+- Cut a surviving comment to length. One line wherever one line does.
+- **A docstring is contract.** When it names one thing and the body does another, it misleads
+  every later reader. A shipped docstring holds contract only: the public API, a generated
+  schema, published docs. Internal rationale goes in a comment beside the code.
 
 ## 3. Structure
 
-- **Single Responsibility** - a function/class does one thing and has one reason to change
-- **Separation of concerns** - keep I/O, business logic, and presentation as distinct layers
-- **Pure functions** where possible - same input → same output, no side effects
-- Prefer flat over nested
-- **Few private helpers** - keep the logic in the object or function that owns it. A private helper buried in a large method is unreachable, so it never gets tested
-- A rule with a name is a function - if you can name it, it belongs in the module that owns that concern, not inline in a caller
-- **One definition per fact** - two shapes for one fact drift apart. Ship no second mechanism for one fact, not even for one phase
-- Turn configuration that does not vary into state, not parameters threaded through each call
-
----
+- **Single responsibility** (the S in SOLID). A function or class does one thing and has one
+  reason to change.
+- **Functional core, imperative shell.** Keep decisions in pure functions: the same input gives
+  the same output, with no side effects. Keep I/O and presentation in a thin outer layer.
+- Prefer flat code to nested code.
+- **A rule with a name is a function.** Put it in the module that owns its concern, where a
+  test can reach it. A private helper buried in a large method is unreachable, so it goes untested.
+- **Single source of truth** (DRY). One fact has one definition. Two shapes for one fact drift
+  apart. Ship no second mechanism for it, even for one phase.
+- **Dependency injection for the environment.** `PATH`, the working directory, `HOME`,
+  environment variables, the clock and the locale are inputs. The shell reads each one once and
+  passes it in.
+- Configuration that is fixed for a run goes to the object that owns it, once, when the object
+  is built. Do not thread it through every call. Ask of every function: does it read anything
+  that neither its caller passed nor its owner holds?
+- **Open/closed and dependency inversion** (the O and D in SOLID) apply once a second case
+  exists. Add an interface or an extension point only for a variant that exists today. With one
+  implementation, call it directly.
 
 ## 4. Complexity
 
-- Cyclomatic complexity is a smell - if you need to trace more than ~3 branches to understand a function, split it
-- Dead code doesn't exist - delete it, git remembers
-- Don't optimize prematurely - measure first
+- **Cyclomatic complexity.** When a reader has to trace branches on paper to follow a
+  function, split it.
+- **Dead code.** Delete it. Version control remembers it.
+- **Premature optimization.** Optimize only what a measurement shows is slow.
 
----
+## 5. Interfaces and contracts
 
-## 5. Interfaces & Contracts
+- **Parse, don't validate.** A check returns the value it proved, in a type that carries the
+  proof. It never returns a bool, and it never hands back the raw string it was given.
+- **Make invalid states unrepresentable.** Use types and schemas so bad data cannot be built.
+- **Fail fast.** Reject bad input at the boundary where it arrives, loudly, with the value that
+  broke the rule. An error deep in a stack trace hides its cause.
+- **Postel's law, at the outer edge only.** Accept loose input from a source you do not
+  control, such as a person, a file or a third-party API. Parse it into a strict type at once.
+  Everything inside the boundary, and everything you send, stays strict.
+- **Expand and contract** across services that deploy apart. Ship the producer that serves the
+  old and the new shape first. Move each consumer, then remove the old shape.
 
-- **Postel's Law** - be conservative in what you send, liberal in what you accept
-- Make invalid states unrepresentable - use types/schemas to prevent bad data rather than checking at runtime. **Parse, don't validate**: a check hands back the value it proved, never a bool or the string you asked with
-- **Fail fast and loudly** - surface errors at the boundary, not buried in a stack trace
-- **Open/Closed** - open for extension, closed for modification; add behavior without touching existing code
-- **Dependency Inversion** - depend on abstractions, not concretions. The environment is a dependency: `PATH`, cwd, `HOME`, env vars, the clock, the locale. Inject them. Ask of every function: does it read anything the caller did not pass?
-- Fewer dependencies = fewer attack surfaces, fewer breakages, faster builds
+In this example, `is_port` leaves every caller holding a raw string that it must check again.
+`parse_port` runs once at the boundary and hands back a `Port` or raises.
 
----
+```python
+def is_port(text: str) -> bool:
+    return text.isdigit() and 0 < int(text) < 65536
+
+@dataclass(frozen=True)
+class Port:
+    number: int
+
+def parse_port(text: str) -> Port:
+    number = int(text)
+    if not 0 < number < 65536:
+        raise ValueError(f"port out of range: {text!r}")
+    return Port(number)
+```
 
 ## 6. Testing
 
-> A test that cannot fail is not a test.
+- **Red, green, refactor** (test-driven development). Watch a test fail before you trust it.
+  When the code exists already, break the code and watch the test go red. Then make it pass,
+  then tidy it while the change is fresh.
+- **Mutation testing.** Break a subtle rule the way a maintainer would by accident: drop a
+  sort, flip a boolean. Confirm a test goes red, then restore. Deleting the whole function
+  proves nothing. A mutant that survives is a missing test, or a test that lies.
+- **Fixtures must discriminate.** Pick inputs where a wrong implementation gives a different
+  answer.
+- **Assert the contract.** An assertion copied from the current output always agrees with it
+  and carries no requirement. A refactor that keeps the behaviour keeps every test green. Never
+  change an assertion and the code it checks in the same step.
+- **Test the rule directly.** Test the rule's own function from section 3. A rule reachable only
+  through a large method gets tested by accident, or never.
+- **A test helper never reimplements a production guard.** Call the real guard, or test its branch.
+- **Double-loop TDD.** A unit test pins the rule and an acceptance test pins the behaviour a
+  person sees. A deviation must fail both. Keep one home per rule in each layer and delete any
+  other copy. Before you delete a test whose subject moved, confirm its requirement holds elsewhere.
+- **Round-trip a pair.** Two halves that must agree, such as encode and decode or plan and
+  apply, get one test on the agreement. A green half proves nothing about the seam.
+- **Never weaken a test to get green.** Do not skip it, delete it or loosen its assertion to
+  pass. Fix the code, or tell the person why the test is wrong.
+- **Test code is production code.** The same standards hold for naming, duplication and clarity.
+- **FIRST.** Fast, independent, repeatable, self-validating and timely.
 
-- **Red first** - write the test and watch it fail before you trust it. If the code already exists, break the code and watch it go red
-- **Mutation-check subtle rules** - break the rule the way a maintainer breaks it by accident (drop a `sorted`, flip a boolean), confirm the test goes red, restore. Deleting the function proves nothing. A surviving mutant is a missing test, or a test that lies
-- **Assert the contract, not the current output** - an assertion copied from the output always agrees with it and carries no requirement
-- **Fixtures must discriminate** - pick inputs where a wrong implementation gives a different answer. Two keys already in order make `sorted` and unsorted agree
-- **Test behavior, not structure** - if a refactor breaks tests but not behavior, the tests are wrong. Never change assertions and implementation in the same step
-- **Test the rule directly** - a rule reachable only through a large method gets tested by accident, or never. Extract it as a pure function (§3) and test that
-- **A test helper never reimplements a production guard** - call the real one, or test its branch
-- **Verify against real data** - a synthetic fixture holds only what its author remembered. A green suite is not evidence until it has met real output
-- **One rule, one home** - delete duplicate coverage. When a test's subject moves, confirm the requirement survives elsewhere before you delete the test
-- **State intent at two layers** - a unit test on the rule, an acceptance test on the behavior. A deviation must falsify both. This is not duplicate coverage - one home per rule _per layer_
-- **Round-trip a pair** - two halves that must agree (encode/decode, write/read, plan/apply) get one test on the agreement, not two tests on the halves. A green half proves nothing about the seam
-- **Test code is production code** - same standards for naming, duplication, and clarity
-- **FIRST** - Fast, Independent, Repeatable, Self-Validating, Timely
+In this example, the first fixture passes whether `names` sorts or not, so a dropped sort
+survives it. The second fixture kills that mutant.
 
----
+```python
+def test_names_are_sorted():
+    assert names(["ana", "bo"]) == "ana, bo"
+    assert names(["cy", "ana", "bo"]) == "ana, bo, cy"
+```
 
-## 7. Process & Mindset
+## 7. Process
 
-- **Boy Scout Rule** - leave the code better than you found it
-- **Occam's Razor** - the simplest explanation is usually the correct design
-- Don't fix what isn't broken
-- The best refactor is the one made before committing, not after
-- **A rule a tool can check belongs in a tool** - prose rules decay over a long session; a lint gate, coverage threshold, or mutation run does not. Keep only judgment calls in this doc
-- **Review behavior, not diffs** - read the tests (they are the contract), then run the thing. Spot-check critical code instead of reading every generated line
+- **KISS** (keep it simple). Pick the simplest design that meets the need.
+- **Boy Scout rule, scoped to the diff.** Tidy the code your change already touches. Leave other
+  code alone, and offer its fix as a phase of its own.
+- **Automate a checkable rule.** A lint gate, a coverage threshold or a mutation run holds over
+  a long session, where a prose rule fades. Keep only judgment calls in this skill.
+- **Review behaviour first.** Read the tests, because they are the contract. Then run the code.
+  Then spot-check the critical lines.
