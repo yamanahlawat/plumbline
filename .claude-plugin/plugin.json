@@ -1,7 +1,6 @@
 {
   "name": "plumbline",
   "description": "Evidence before assertion. House rules for how an agent investigates, writes code, and writes the record.",
-  "version": "0.1.0",
   "author": {
     "name": "Yaman Ahlawat",
     "url": "https://github.com/yamanahlawat"

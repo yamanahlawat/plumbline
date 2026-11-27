@@ -15,24 +15,21 @@ RULES_FILE="${PLUGIN_ROOT}/AGENTS.md"
 
 rules="$(<"$RULES_FILE")"
 
-# One pass per escape. A character loop is orders of magnitude slower.
+# JSON forbids every control byte below 0x20 in a string. One pass per byte.
 escape_for_json() {
-  local s="$1"
+  local s="$1" code char
   s="${s//\\/\\\\}"
   s="${s//\"/\\\"}"
   s="${s//$'\n'/\\n}"
   s="${s//$'\r'/\\r}"
   s="${s//$'\t'/\\t}"
+  for code in 01 02 03 04 05 06 07 08 0b 0c 0e 0f 10 11 12 13 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f; do
+    printf -v char %b "\\x$code"
+    s="${s//$char/\\u00$code}"
+  done
   printf '%s' "$s"
 }
 
 context="<PLUMBLINE>\nThe house rules below apply to every action in this session. Follow them; do not restate them.\n\n$(escape_for_json "$rules")\n</PLUMBLINE>"
 
-# Each platform reads one field and ignores the rest, so emit only the one it reads.
-if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
-  printf '{\n  "additional_context": "%s"\n}\n' "$context"
-elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && [ -z "${COPILOT_CLI:-}" ]; then
-  printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$context"
-else
-  printf '{\n  "additionalContext": "%s"\n}\n' "$context"
-fi
+printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$context"
